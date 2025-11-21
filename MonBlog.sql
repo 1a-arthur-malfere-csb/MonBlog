@@ -37,5 +37,3 @@ insert into T_COMMENTAIRE(COM_DATE, COM_AUTEUR, COM_CONTENU, BIL_ID) values
 -- Ajoute un commentaire au deuxième billet
 insert into T_COMMENTAIRE(COM_DATE, COM_AUTEUR, COM_CONTENU, BIL_ID) values
 (NOW(), 'A. Nonyme', 'Hâte de lire la suite', 2);
-
-

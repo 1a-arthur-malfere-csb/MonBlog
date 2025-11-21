@@ -7,14 +7,15 @@
    Pour pouvoir utiliser un "min-height: 100%" sur div#global, il nous faut:
    - un parent (body) en "height: 100%";
    - le parent de body également en "height: 100%". */
-html, body {
+html,
+body {
     height: 100%;
 }
 
 body {
     color: #bfbfbf;
     background: black;
-    font-family: 'Futura-Medium', 'Futura', 'Trebuchet MS', sans-serif;
+    font-family: "Futura-Medium", "Futura", "Trebuchet MS", sans-serif;
 }
 
 h1 {
@@ -22,23 +23,24 @@ h1 {
 }
 
 .titreBillet {
-    margin-bottom : 0px;
+    margin-bottom: 0px;
 }
 
 #global {
-    min-height: 100%;  /* Voir commentaire sur html et body plus haut */
+    min-height: 100%; /* Voir commentaire sur html et body plus haut */
     background: #333534;
     width: 70%;
-    margin: auto;	/* Permet de centrer la div */
+    margin: auto; /* Permet de centrer la div */
     text-align: justify;
     padding: 5px 20px;
 }
 
 #contenu {
-    margin-bottom : 30px;
+    margin-bottom: 30px;
 }
 
-#titreBlog, #piedBlog {
+#titreBlog,
+#piedBlog {
     text-align: center;
 }
 
@@ -88,4 +90,41 @@ h1 {
     color: #888;
     font-style: italic;
     padding: 10px 0;
+}
+
+.bouton {
+    display: inline-block;
+    padding: 8px 15px;
+    background: #555;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 3px;
+    margin-top: 10px;
+}
+
+.bouton:hover {
+    background: #777;
+}
+
+.commentaire input[type="text"],
+.commentaire textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #555;
+    background: #2a2a2a;
+    color: #fff;
+    border-radius: 3px;
+}
+
+.commentaire input[type="submit"] {
+    background: #555;
+    color: #fff;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.commentaire input[type="submit"]:hover {
+    background: #777;
 }
