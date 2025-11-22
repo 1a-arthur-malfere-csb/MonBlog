@@ -1,3 +1,4 @@
+<?php session_start(); ?>
 <!doctype html>
 <html lang="fr">
     <head>
@@ -11,6 +12,15 @@
             <header>
                 <a href="index.php"><h1 id="titreBlog">Mon Blog</h1></a>
                 <p>Je vous souhaite la bienvenue sur ce modeste blog.</p>
+                <div id="user-menu">
+                    <?php if (isset($_SESSION["user_id"])): ?>
+                        <p>Bonjour <?= $_SESSION["user_email"] ?> !</p>
+                        <a href="logout.php" class="bouton">Déconnexion</a>
+                    <?php else: ?>
+                        <a href="login.php" class="bouton">Connexion</a>
+                        <a href="register.php" class="bouton">Inscription</a>
+                    <?php endif; ?>
+                </div>
             </header>
             <div id="contenu">
                 <?php
@@ -31,17 +41,21 @@
                             <time><?= $billet["date"] ?></time>
                         </header>
                         <p><?= $billet["contenu"] ?></p>
+                        <?php if (isset($_SESSION["user_id"])): ?>
                         <a href="commenter.php?id=<?= $billet[
                             "id"
                         ] ?>" class="bouton">Ajouter un commentaire</a>
+                        <?php endif; ?>
 
                         <div class="commentaires">
                             <h2>Commentaires</h2>
                             <?php
                             $reqCommentaires = $bdd->prepare(
-                                "select COM_ID as id, COM_DATE as date," .
-                                    " COM_AUTEUR as auteur, COM_CONTENU as contenu from T_COMMENTAIRE" .
-                                    " where BIL_ID = ? order by COM_DATE",
+                                "SELECT c.COM_ID as id, c.COM_DATE as date, u.UTI_EMAIL as auteur, c.COM_CONTENU as contenu
+                                FROM T_COMMENTAIRE c
+                                JOIN T_UTILISATEUR u ON c.UTI_ID = u.UTI_ID
+                                WHERE c.BIL_ID = ?
+                                ORDER BY c.COM_DATE",
                             );
                             $reqCommentaires->execute([$billet["id"]]);
                             $commentaires = $reqCommentaires->fetchAll();

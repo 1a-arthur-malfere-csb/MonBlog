@@ -1,6 +1,11 @@
 <?php
 session_start();
 
+if (!isset($_SESSION["user_email"])) {
+    header("Location: login.php");
+    exit();
+}
+
 $bdd = new PDO(
     "mysql:host=localhost;dbname=monblog;charset=utf8",
     "userblog",
@@ -13,18 +18,18 @@ if (isset($_GET["id"]) && !empty($_GET["id"])) {
     header("Location: index.php");
 }
 
-if (isset($_POST["auteur"]) && isset($_POST["commentaire"])) {
-    $auteur = $_POST["auteur"];
+if (isset($_POST["commentaire"])) {
     $commentaire = $_POST["commentaire"];
+    $user_id = $_SESSION["user_id"];
 
-    if (!empty($auteur) && !empty($commentaire)) {
+    if (!empty($commentaire)) {
         $req = $bdd->prepare(
-            "INSERT INTO T_COMMENTAIRE(COM_DATE, COM_AUTEUR, COM_CONTENU, BIL_ID) VALUES (NOW(), ?, ?, ?)",
+            "INSERT INTO T_COMMENTAIRE(COM_DATE, COM_CONTENU, BIL_ID, UTI_ID) VALUES (NOW(), ?, ?, ?)",
         );
-        $req->execute([$auteur, $commentaire, $id_billet]);
+        $req->execute([$commentaire, $id_billet, $user_id]);
         header("Location: index.php");
     } else {
-        $erreur = "Veuillez remplir tous les champs.";
+        $erreur = "Veuillez remplir le champ commentaire.";
     }
 }
 ?>
@@ -49,10 +54,6 @@ if (isset($_POST["auteur"]) && isset($_POST["commentaire"])) {
                         <h1 class="titreBillet">Ajouter un commentaire</h1>
                     </header>
                     <form method="post" action="commenter.php?id=<?= $id_billet ?>">
-                        <p>
-                            <label for="auteur">Auteur</label><br />
-                            <input type="text" name="auteur" id="auteur" />
-                        </p>
                         <p>
                             <label for="commentaire">Commentaire</label><br />
                             <textarea name="commentaire" id="commentaire" rows="5" cols="50"></textarea>

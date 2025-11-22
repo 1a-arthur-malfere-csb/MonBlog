@@ -1,39 +1,49 @@
 /* Testé sous MySQL 5.x */
+/* Schema de la base de données pour le blog 'monblog' */
 
-create database if not exists monblog character set utf8 collate utf8_general_ci;
-use monblog;
+-- Il est recommandé de créer la base de données manuellement si elle n'existe pas :
+-- CREATE DATABASE IF NOT EXISTS monblog CHARACTER SET utf8 COLLATE utf8_general_ci;
+-- USE monblog;
 
--- drop table if exists T_COMMENTAIRE;
--- drop table if exists T_BILLET;
+-- Suppression des tables dans l'ordre inverse des dépendances pour éviter les erreurs de clé étrangère.
+DROP TABLE IF EXISTS T_COMMENTAIRE;
+DROP TABLE IF EXISTS T_UTILISATEUR;
+DROP TABLE IF EXISTS T_BILLET;
 
-create table if not exists T_BILLET (
-  BIL_ID integer primary key auto_increment,
-  BIL_DATE datetime not null,
-  BIL_TITRE varchar(100) not null,
-  BIL_CONTENU varchar(400) not null
+-- Création de la table pour les billets (articles)
+CREATE TABLE T_BILLET (
+  BIL_ID INT PRIMARY KEY AUTO_INCREMENT,
+  BIL_DATE DATETIME NOT NULL,
+  BIL_TITRE VARCHAR(100) NOT NULL,
+  BIL_CONTENU VARCHAR(400) NOT NULL
 ) ENGINE=INNODB CHARACTER SET utf8 COLLATE utf8_general_ci;
 
-create table if not exists T_COMMENTAIRE (
-  COM_ID integer primary key auto_increment,
-  COM_DATE datetime not null,
-  COM_AUTEUR varchar(100) not null,
-  COM_CONTENU varchar(200) not null,
-  BIL_ID integer not null,
-  constraint fk_com_bil foreign key(BIL_ID) references T_BILLET(BIL_ID)
+-- Création de la table pour les utilisateurs
+CREATE TABLE T_UTILISATEUR (
+  UTI_ID INT PRIMARY KEY AUTO_INCREMENT,
+  UTI_EMAIL VARCHAR(100) NOT NULL UNIQUE,
+  UTI_PASSWORD VARCHAR(255) NOT NULL
 ) ENGINE=INNODB CHARACTER SET utf8 COLLATE utf8_general_ci;
 
-insert into T_BILLET(BIL_DATE, BIL_TITRE, BIL_CONTENU) values
+-- Création de la table pour les commentaires
+CREATE TABLE T_COMMENTAIRE (
+  COM_ID INT PRIMARY KEY AUTO_INCREMENT,
+  COM_DATE DATETIME NOT NULL,
+  COM_CONTENU VARCHAR(200) NOT NULL,
+  BIL_ID INT NOT NULL,
+  UTI_ID INT NOT NULL,
+  CONSTRAINT fk_com_bil FOREIGN KEY(BIL_ID) REFERENCES T_BILLET(BIL_ID),
+  CONSTRAINT fk_com_uti FOREIGN KEY(UTI_ID) REFERENCES T_UTILISATEUR(UTI_ID)
+) ENGINE=INNODB CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+-- Insertion de quelques billets de démonstration
+INSERT INTO T_BILLET(BIL_DATE, BIL_TITRE, BIL_CONTENU) VALUES
 (NOW(), 'Premier billet', 'Bonjour monde ! Ceci est le premier billet sur mon blog.');
-insert into T_BILLET(BIL_DATE, BIL_TITRE, BIL_CONTENU) values
+INSERT INTO T_BILLET(BIL_DATE, BIL_TITRE, BIL_CONTENU) VALUES
 (NOW(), 'Au travail', 'Il faut enrichir ce blog dès maintenant.');
--- Ajoute un billet supplémentaire pour tester
-insert into T_BILLET(BIL_DATE, BIL_TITRE, BIL_CONTENU) values
+INSERT INTO T_BILLET(BIL_DATE, BIL_TITRE, BIL_CONTENU) VALUES
 (NOW(), 'Troisième billet', 'Encore un billet pour tester le blog.');
 
-insert into T_COMMENTAIRE(COM_DATE, COM_AUTEUR, COM_CONTENU, BIL_ID) values
-(NOW(), 'A. Nonyme', 'Bravo pour ce début', 1);
-insert into T_COMMENTAIRE(COM_DATE, COM_AUTEUR, COM_CONTENU, BIL_ID) values
-(NOW(), 'Moi', 'Merci ! Je vais continuer sur ma lancée', 1);
--- Ajoute un commentaire au deuxième billet
-insert into T_COMMENTAIRE(COM_DATE, COM_AUTEUR, COM_CONTENU, BIL_ID) values
-(NOW(), 'A. Nonyme', 'Hâte de lire la suite', 2);
+-- Les utilisateurs et les commentaires doivent être ajoutés via l'application web.
+-- Pour tester, créez un utilisateur via le formulaire d'inscription,
+-- puis ajoutez des commentaires sur les billets.

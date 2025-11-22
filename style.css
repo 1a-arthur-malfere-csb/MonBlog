@@ -122,6 +122,12 @@ input[type="submit"]:hover,
     background-color: #3367d6;
 }
 
+#user-menu {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
 /* Footer */
 #piedBlog {
     text-align: center;
