@@ -36,40 +36,48 @@ if (isset($_POST["commentaire"])) {
 
 <!doctype html>
 <html lang="fr">
-    <head>
-        <meta charset="UTF-8" />
-        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="style.css" />
-        <title>Mon Blog - Ajouter un commentaire</title>
-    </head>
-    <body>
-        <div id="global">
-            <header>
-                <a href="index.php"><h1 id="titreBlog">Mon Blog</h1></a>
-                <p>Je vous souhaite la bienvenue sur ce modeste blog.</p>
-            </header>
-            <div id="contenu">
-                <article>
-                    <header>
-                        <h1 class="titreBillet">Ajouter un commentaire</h1>
-                    </header>
-                    <form method="post" action="commenter.php?id=<?= $id_billet ?>">
-                        <p>
-                            <label for="commentaire">Commentaire</label><br />
-                            <textarea name="commentaire" id="commentaire" rows="5" cols="50"></textarea>
-                        </p>
-                        <p>
-                            <input type="submit" value="Ajouter le commentaire" />
-                        </p>
-                    </form>
-                    <?php if (isset($erreur)): ?>
-                        <p class="erreur"><?= $erreur ?></p>
-                    <?php endif; ?>
-                </article>
-            </div> <!-- #contenu -->
-            <footer id="piedBlog">
-                Blog réalisé avec PHP, HTML5 et CSS.
-            </footer>
-        </div> <!-- #global -->
-    </body>
+
+<head>
+    <meta charset="UTF-8" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css" />
+    <title>Mon Blog - Ajouter un commentaire</title>
+</head>
+
+<body>
+    <header class="main-header">
+        <a href="index.php">
+            <h1 id="titreBlog">Mon Blog</h1>
+        </a>
+        <div id="user-menu">
+            <p><?= htmlspecialchars($_SESSION["user_email"]) ?></p>
+            <a href="logout.php" class="bouton">Déconnexion</a>
+        </div>
+    </header>
+    <div id="global">
+        <div id="contenu">
+            <article>
+                <header>
+                    <h1 class="titreBillet">Ajouter un commentaire</h1>
+                </header>
+                <form method="post" action="commenter.php?id=<?= $id_billet ?>">
+                    <p>
+                        <label for="commentaire">Commentaire</label><br />
+                        <textarea name="commentaire" id="commentaire" rows="5" cols="50"></textarea>
+                    </p>
+                    <p>
+                        <input type="submit" value="Ajouter le commentaire" />
+                    </p>
+                </form>
+                <?php if (isset($erreur)): ?>
+                    <p class="erreur"><?= $erreur ?></p>
+                <?php endif; ?>
+            </article>
+        </div> <!-- #contenu -->
+        <footer id="piedBlog">
+            Blog réalisé avec PHP, HTML5 et CSS.
+        </footer>
+    </div> <!-- #global -->
+</body>
+
 </html>

@@ -31,45 +31,39 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
 
 <!doctype html>
 <html lang="fr">
-    <head>
-        <meta charset="UTF-8" />
-        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="style.css" />
-        <title>Mon Blog - Connexion</title>
-    </head>
-    <body>
-        <div id="global">
-            <header>
-                <a href="index.php"><h1 id="titreBlog">Mon Blog</h1></a>
-                <p>Je vous souhaite la bienvenue sur ce modeste blog.</p>
-            </header>
-            <div id="contenu">
-                <article>
-                    <header>
-                        <h1 class="titreBillet">Connexion</h1>
-                    </header>
-                    <form method="post" action="login.php">
-                        <p>
-                            <label for="email">Email</label><br />
-                            <input type="email" name="email" id="email" />
-                        </p>
-                        <p>
-                            <label for="password">Mot de passe</label><br />
-                            <input type="password" name="password" id="password" />
-                        </p>
-                        <p>
-                            <input type="submit" value="Se connecter" />
-                        </p>
-                    </form>
-                    <?php if (isset($erreur)): ?>
-                        <p class="erreur"><?= $erreur ?></p>
-                    <?php endif; ?>
-                    <p>Pas encore de compte ? <a href="register.php">Inscrivez-vous ici</a>.</p>
-                </article>
-            </div> <!-- #contenu -->
-            <footer id="piedBlog">
-                Blog réalisé avec PHP, HTML5 et CSS.
-            </footer>
-        </div> <!-- #global -->
-    </body>
+
+<head>
+    <meta charset="UTF-8" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css" />
+    <title>Mon Blog - Connexion</title>
+</head>
+
+<body>
+    <div class="form-container">
+        <div class="logo-placeholder" style="color: var(--google-blue);">Mon Blog</div>
+        <h1 class="subtitle">Connexion</h1>
+
+        <form method="post" action="login.php">
+            <label for="email">Email</label>
+            <input type="email" name="email" id="email" required />
+
+            <label for="password">Mot de passe</label>
+            <input type="password" name="password" id="password" required />
+
+            <div style="text-align: right; margin-top: 20px;">
+                <a href="register.php" style="float: left; line-height: 36px; font-size: 14px;">Créer un compte</a>
+                <input type="submit" value="Suivant" />
+            </div>
+        </form>
+
+        <?php if (isset($erreur)): ?>
+            <p class="erreur" style="color: #d93025; font-size: 12px; margin-top: 10px;"><?= $erreur ?></p>
+        <?php endif; ?>
+    </div>
+    <footer id="piedBlog">
+        Blog réalisé avec PHP, HTML5 et CSS.
+    </footer>
+</body>
+
 </html>
