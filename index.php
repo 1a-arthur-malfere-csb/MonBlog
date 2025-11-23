@@ -10,13 +10,48 @@
 </head>
 
 <body>
+<?php function getRandomColorForUser($email)
+{
+    $hash = crc32($email);
+    // A list of pleasant, Material Design-like colors. Yellow is excluded for better contrast with white text.
+    $colors = [
+        "#F44336",
+        "#E91E63",
+        "#9C27B0",
+        "#673AB7",
+        "#3F51B5",
+        "#2196F3",
+        "#03A9F4",
+        "#00BCD4",
+        "#009688",
+        "#4CAF50",
+        "#8BC34A",
+        "#CDDC39",
+        "#FFC107",
+        "#FF9800",
+        "#FF5722",
+        "#795548",
+        "#9E9E9E",
+        "#607D8B",
+    ];
+    return $colors[abs($hash) % count($colors)];
+} ?>
     <header class="main-header">
         <a href="index.php">
             <h1 id="titreBlog">Mon Blog</h1>
         </a>
         <div id="user-menu">
             <?php if (isset($_SESSION["user_id"])): ?>
-                <p><?= htmlspecialchars($_SESSION["user_email"]) ?></p>
+                <div class="user-info">
+                    <div class="avatar" style="background-color: <?= htmlspecialchars(
+                        getRandomColorForUser($_SESSION["user_email"]),
+                    ) ?>">
+                        <span><?= htmlspecialchars(
+                            strtoupper(substr($_SESSION["user_email"], 0, 1)),
+                        ) ?></span>
+                    </div>
+                    <p><?= htmlspecialchars($_SESSION["user_email"]) ?></p>
+                </div>
                 <a href="logout.php" class="bouton">Déconnexion</a>
             <?php else: ?>
                 <a href="login.php" class="bouton">Connexion</a>

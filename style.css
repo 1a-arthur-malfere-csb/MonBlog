@@ -5,15 +5,16 @@
     --google-text-primary: #202124;
     --google-text-secondary: #5f6368;
     --google-border: #dadce0;
-    --card-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
-    --header-shadow: 0 2px 4px rgba(0,0,0,0.08);
+    --card-shadow:
+        0 1px 2px 0 rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
+    --header-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
     --border-radius: 8px;
 }
 
 body {
     background-color: var(--google-gray-bg);
     color: var(--google-text-primary);
-    font-family: 'Roboto', sans-serif;
+    font-family: "Roboto", sans-serif;
     margin: 0;
     padding: 0;
     line-height: 1.5;
@@ -75,8 +76,28 @@ header.main-header {
     color: var(--google-text-primary);
 }
 
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 500;
+    font-size: 16px;
+    text-transform: uppercase;
+}
+
 /* Post / Card */
-article, .card {
+article,
+.card {
     background-color: #fff;
     border-radius: var(--border-radius);
     box-shadow: var(--card-shadow);
@@ -179,7 +200,8 @@ label {
     font-size: 14px;
 }
 
-.bouton, input[type="submit"] {
+.bouton,
+input[type="submit"] {
     background-color: var(--google-blue);
     color: #fff;
     border: none;
@@ -197,10 +219,11 @@ label {
     box-sizing: border-box;
 }
 
-.bouton:hover, input[type="submit"]:hover {
+.bouton:hover,
+input[type="submit"]:hover {
     background-color: var(--google-blue-hover);
     text-decoration: none;
-    box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
 }
 
 /* Context Menu */
@@ -209,7 +232,7 @@ label {
     position: absolute;
     background-color: #fff;
     border: none;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
     border-radius: 4px;
     padding: 8px 0;
     z-index: 1000;
@@ -270,4 +293,3 @@ label {
     margin-bottom: 40px;
     color: var(--google-text-primary);
 }
-
