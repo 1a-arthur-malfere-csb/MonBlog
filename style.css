@@ -95,6 +95,53 @@ header.main-header {
     text-transform: uppercase;
 }
 
+/* Search Form */
+.search-form {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    max-width: 500px;
+    margin: 0 20px;
+}
+
+.search-form input[type="search"] {
+    width: 100%; /* Overwrites the global width: 100% for inputs */
+    margin-bottom: 0; /* Overwrites the global margin */
+    border-right: none;
+    border-radius: 20px 0 0 20px;
+    height: 40px;
+    padding: 13px 15px; /* Keep consistency */
+}
+
+.search-form input[type="search"]:focus {
+    padding: 12px 14px; /* Keep consistency */
+}
+
+.search-form button {
+    height: 40px;
+    width: 64px;
+    border-radius: 0 20px 20px 0;
+    background-color: #f8f9fa;
+    border: 1px solid var(--google-border);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+}
+
+.search-form button:hover {
+    background-color: #f1f3f4;
+    box-shadow: none;
+}
+
+.search-form button svg {
+    fill: var(--google-text-secondary);
+    width: 20px;
+    height: 20px;
+}
+
 /* Post / Card */
 article,
 .card {

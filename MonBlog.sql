@@ -39,12 +39,12 @@ CREATE TABLE T_COMMENTAIRE (
 ) ENGINE=INNODB CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 -- Insertion de quelques billets de démonstration
-INSERT INTO T_BILLET(BIL_DATE, BIL_TITRE, BIL_CONTENU) VALUES
-(NOW(), 'Premier billet', 'Bonjour monde ! Ceci est le premier billet sur mon blog.');
-INSERT INTO T_BILLET(BIL_DATE, BIL_TITRE, BIL_CONTENU) VALUES
-(NOW(), 'Au travail', 'Il faut enrichir ce blog dès maintenant.');
-INSERT INTO T_BILLET(BIL_DATE, BIL_TITRE, BIL_CONTENU) VALUES
-(NOW(), 'Troisième billet', 'Encore un billet pour tester le blog.');
+-- INSERT INTO T_BILLET(BIL_DATE, BIL_TITRE, BIL_CONTENU) VALUES
+-- (NOW(), 'Premier billet', 'Bonjour monde ! Ceci est le premier billet sur mon blog.');
+-- INSERT INTO T_BILLET(BIL_DATE, BIL_TITRE, BIL_CONTENU) VALUES
+-- (NOW(), 'Au travail', 'Il faut enrichir ce blog dès maintenant.');
+-- INSERT INTO T_BILLET(BIL_DATE, BIL_TITRE, BIL_CONTENU) VALUES
+-- (NOW(), 'Troisième billet', 'Encore un billet pour tester le blog.');
 
 -- Les utilisateurs et les commentaires doivent être ajoutés via l'application web.
 -- Pour tester, créez un utilisateur via le formulaire d'inscription,
