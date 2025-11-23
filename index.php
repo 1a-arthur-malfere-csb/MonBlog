@@ -44,9 +44,7 @@
                         ) ?></h1>
                         <time><?= $billet["date"] ?></time>
                     </header>
-                    <p><?= nl2br(
-                        htmlspecialchars($billet["contenu"]),
-                    ) ?></p>
+                    <p><?= nl2br(htmlspecialchars($billet["contenu"])) ?></p>
                     <?php if (isset($_SESSION["user_id"])): ?>
                         <a href="commenter.php?id=<?= $billet[
                             "id"
@@ -68,20 +66,16 @@
 
                         if (empty($commentaires)): ?>
                             <p class="aucunCommentaire">Aucun commentaire pour le moment.</p>
-                        <?php else:
-                            foreach (
-                                $commentaires
-                                as $commentaire
-                            ): ?>
+                        <?php else:foreach ($commentaires as $commentaire): ?>
                                 <?php $isAuthor =
                                     isset($_SESSION["user_id"]) &&
                                     $_SESSION["user_id"] ==
-                                    $commentaire["UTI_ID"]; ?>
+                                        $commentaire["UTI_ID"]; ?>
                                 <div class="commentaire <?= $isAuthor
                                     ? "own-comment"
                                     : "" ?>" data-comment-id="<?= $commentaire[
-                                      "COM_ID"
-                                  ] ?>">
+    "COM_ID"
+] ?>">
                                     <p class="commentaireAuteur">
                                         <strong><?= htmlspecialchars(
                                             $commentaire["UTI_EMAIL"],
@@ -103,7 +97,7 @@
                                         ),
                                     ) ?></p>
                                 </div>
-                            <?php endforeach; endif;
+                            <?php endforeach;endif;
                         ?>
                     </div>
                 </article>
@@ -178,7 +172,8 @@
             document.getElementById('edit-comment').addEventListener('click', function () {
                 if (!currentCommentId) return;
 
-                const commentDiv = document.querySelector(`.commentaire[data-comment-id='${currentCommentId}']`);
+                const commentIdForEdit = currentCommentId;
+                const commentDiv = document.querySelector(`.commentaire[data-comment-id='${commentIdForEdit}']`);
                 const contentP = commentDiv.querySelector('.commentaireContenu');
                 const originalContent = contentP.innerText;
 
@@ -208,7 +203,7 @@
                     }
 
                     const formData = new FormData();
-                    formData.append('comment_id', currentCommentId);
+                    formData.append('comment_id', commentIdForEdit);
                     formData.append('content', newContent);
 
                     fetch('edit_comment.php', {
