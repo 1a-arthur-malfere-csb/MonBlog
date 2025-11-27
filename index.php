@@ -4,37 +4,12 @@
 
 <head>
     <meta charset="UTF-8" />
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css" />
     <title>Mon Blog</title>
 </head>
 
 <body>
-<?php function getRandomColorForUser($email)
-{
-    $hash = crc32($email);
-    $colors = [
-        "#F44336",
-        "#E91E63",
-        "#9C27B0",
-        "#673AB7",
-        "#3F51B5",
-        "#2196F3",
-        "#03A9F4",
-        "#00BCD4",
-        "#009688",
-        "#4CAF50",
-        "#8BC34A",
-        "#CDDC39",
-        "#FFC107",
-        "#FF9800",
-        "#FF5722",
-        "#795548",
-        "#9E9E9E",
-        "#607D8B",
-    ];
-    return $colors[abs($hash) % count($colors)];
-} ?>
     <header class="main-header">
         <a href="index.php">
             <h1 id="titreBlog">Mon Blog</h1>
@@ -56,9 +31,7 @@
         <div id="user-menu">
             <?php if (isset($_SESSION["user_id"])): ?>
                 <div class="user-info">
-                    <div class="avatar" style="background-color: <?= htmlspecialchars(
-                        getRandomColorForUser($_SESSION["user_email"]),
-                    ) ?>">
+                    <div class="avatar">
                         <span><?= htmlspecialchars(
                             strtoupper(substr($_SESSION["user_email"], 0, 1)),
                         ) ?></span>
@@ -113,17 +86,11 @@
                         $commentaires = $reqCommentaires->fetchAll();
 
                         if (empty($commentaires)): ?>
-                            <p class="aucunCommentaire">Aucun commentaire pour le moment.</p>
+                            <p>Aucun commentaire pour le moment.</p>
                         <?php else:foreach ($commentaires as $commentaire): ?>
-                                <?php $isAuthor =
-                                    isset($_SESSION["user_id"]) &&
-                                    $_SESSION["user_id"] ==
-                                        $commentaire["UTI_ID"]; ?>
-                                <div class="commentaire <?= $isAuthor
-                                    ? "own-comment"
-                                    : "" ?>" data-comment-id="<?= $commentaire[
-    "COM_ID"
-] ?>">
+                                <div class="commentaire" data-comment-id="<?= $commentaire[
+                                    "COM_ID"
+                                ] ?>">
                                     <p class="commentaireAuteur">
                                         <strong><?= htmlspecialchars(
                                             $commentaire["UTI_EMAIL"],
@@ -149,7 +116,6 @@
                         ?>
                     </div>
                 </article>
-                <hr />
             <?php endforeach;
             ?>
         </div>
@@ -170,7 +136,7 @@
             const contextMenu = document.getElementById('context-menu');
             let currentCommentId = null;
 
-            document.querySelectorAll('.own-comment').forEach(comment => {
+            document.querySelectorAll('.commentaire').forEach(comment => {
                 comment.addEventListener('contextmenu', function (e) {
                     e.preventDefault();
                     currentCommentId = this.dataset.commentId;
@@ -221,14 +187,11 @@
                 const originalContent = contentP.innerText;
 
                 const textarea = document.createElement('textarea');
-                textarea.style.width = '100%';
-                textarea.style.height = '80px';
                 textarea.value = originalContent;
 
                 const saveButton = document.createElement('button');
                 saveButton.innerText = 'Sauvegarder';
                 saveButton.className = 'bouton';
-                saveButton.style.marginTop = '5px';
 
                 contentP.innerHTML = '';
                 contentP.appendChild(textarea);

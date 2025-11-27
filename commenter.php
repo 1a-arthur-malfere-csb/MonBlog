@@ -39,7 +39,7 @@ if (isset($_POST["commentaire"])) {
 
 <head>
     <meta charset="UTF-8" />
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css" />
     <title>Mon Blog - Ajouter un commentaire</title>
 </head>
@@ -61,16 +61,12 @@ if (isset($_POST["commentaire"])) {
                     <h1 class="titreBillet">Ajouter un commentaire</h1>
                 </header>
                 <form method="post" action="commenter.php?id=<?= $id_billet ?>">
-                    <p>
-                        <label for="commentaire">Commentaire</label><br />
-                        <textarea name="commentaire" id="commentaire" rows="5" cols="50"></textarea>
-                    </p>
-                    <p>
-                        <input type="submit" value="Ajouter le commentaire" />
-                    </p>
+                    <label for="commentaire">Commentaire</label>
+                    <textarea name="commentaire" id="commentaire" rows="5"></textarea>
+                    <input type="submit" value="Ajouter le commentaire" class="bouton" />
                 </form>
                 <?php if (isset($erreur)): ?>
-                    <p class="erreur"><?= $erreur ?></p>
+                    <p class="error-message"><?= $erreur ?></p>
                 <?php endif; ?>
             </article>
         </div> <!-- #contenu -->

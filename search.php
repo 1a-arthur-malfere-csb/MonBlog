@@ -4,37 +4,12 @@
 
 <head>
     <meta charset="UTF-8" />
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css" />
     <title>Résultats de recherche - Mon Blog</title>
 </head>
 
 <body>
-<?php function getRandomColorForUser($email)
-{
-    $hash = crc32($email);
-    $colors = [
-        "#F44336",
-        "#E91E63",
-        "#9C27B0",
-        "#673AB7",
-        "#3F51B5",
-        "#2196F3",
-        "#03A9F4",
-        "#00BCD4",
-        "#009688",
-        "#4CAF50",
-        "#8BC34A",
-        "#CDDC39",
-        "#FFC107",
-        "#FF9800",
-        "#FF5722",
-        "#795548",
-        "#9E9E9E",
-        "#607D8B",
-    ];
-    return $colors[abs($hash) % count($colors)];
-} ?>
     <header class="main-header">
         <a href="index.php">
             <h1 id="titreBlog">Mon Blog</h1>
@@ -56,9 +31,7 @@
         <div id="user-menu">
             <?php if (isset($_SESSION["user_id"])): ?>
                 <div class="user-info">
-                    <div class="avatar" style="background-color: <?= htmlspecialchars(
-                        getRandomColorForUser($_SESSION["user_email"]),
-                    ) ?>">
+                    <div class="avatar">
                         <span><?= htmlspecialchars(
                             strtoupper(substr($_SESSION["user_email"], 0, 1)),
                         ) ?></span>
@@ -79,7 +52,7 @@
             $query = isset($_GET["q"]) ? trim($_GET["q"]) : "";
 
             if (!empty($query)) {
-                echo "<h1 class='text-center' style='margin-bottom: 20px;'>Résultats pour : " .
+                echo "<h1 class='text-center'>Résultats pour : " .
                     htmlspecialchars($query) .
                     "</h1>";
 
@@ -122,15 +95,14 @@
                                 ) ?>...</p>
                                 <a href="index.php#post-<?= $billet[
                                     "id"
-                                ] ?>" class="bouton" style="margin-top: 10px;">Lire la suite</a>
+                                ] ?>" class="bouton">Lire la suite</a>
                             </article>
-                            <hr />
                         <?php endforeach;
                     } else {
-                        echo "<p class='text-center' style='font-size: 16px; margin-top: 20px;'>Aucun article trouvé correspondant à votre recherche.</p>";
+                        echo "<p class='text-center no-results'>Aucun article trouvé correspondant à votre recherche.</p>";
                     }
                 } catch (Exception $e) {
-                    echo '<p style="color: red; text-align: center;">Une erreur est survenue lors de la connexion à la base de données.</p>';
+                    echo '<p class="error-message">Une erreur est survenue lors de la connexion à la base de données.</p>';
                 }
             } else {
                 if (isset($_GET["q"])) {
