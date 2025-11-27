@@ -27,6 +27,7 @@ if (isset($_POST["commentaire"])) {
             "INSERT INTO T_COMMENTAIRE(COM_DATE, COM_CONTENU, BIL_ID, UTI_ID) VALUES (NOW(), ?, ?, ?)",
         );
         $req->execute([$commentaire, $id_billet, $user_id]);
+        $_SESSION["success_message"] = "Commentaire ajouté avec succès !";
         header("Location: index.php");
     } else {
         $erreur = "Veuillez remplir le champ commentaire.";
@@ -41,6 +42,7 @@ if (isset($_POST["commentaire"])) {
     <meta charset="UTF-8" />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css" />
+    <script src="toast.js"></script>
     <title>Mon Blog - Ajouter un commentaire</title>
 </head>
 
@@ -66,7 +68,11 @@ if (isset($_POST["commentaire"])) {
                     <input type="submit" value="Ajouter le commentaire" class="bouton" />
                 </form>
                 <?php if (isset($erreur)): ?>
-                    <p class="error-message"><?= $erreur ?></p>
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            showErrorToast('<?= addslashes($erreur) ?>');
+                        });
+                    </script>
                 <?php endif; ?>
             </article>
         </div> <!-- #contenu -->

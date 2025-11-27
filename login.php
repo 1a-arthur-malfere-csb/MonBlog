@@ -1,6 +1,13 @@
 <?php
 session_start();
 
+// Récupérer et afficher le message de succès s'il existe
+$success_message = null;
+if (isset($_SESSION["success_message"])) {
+    $success_message = $_SESSION["success_message"];
+    unset($_SESSION["success_message"]);
+}
+
 $bdd = new PDO(
     "mysql:host=localhost;dbname=monblog;charset=utf8",
     "userblog",
@@ -36,6 +43,7 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
     <meta charset="UTF-8" />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css" />
+    <script src="toast.js"></script>
     <title>Mon Blog - Connexion</title>
 </head>
 
@@ -58,7 +66,19 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
         </form>
 
         <?php if (isset($erreur)): ?>
-            <p class="error-message"><?= $erreur ?></p>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    showErrorToast('<?= addslashes($erreur) ?>');
+                });
+            </script>
+        <?php endif; ?>
+
+        <?php if ($success_message): ?>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    showSuccessToast('<?= addslashes($success_message) ?>');
+                });
+            </script>
         <?php endif; ?>
     </div>
     <footer id="piedBlog">

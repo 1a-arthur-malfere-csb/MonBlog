@@ -1,4 +1,12 @@
-<?php session_start(); ?>
+<?php
+session_start();
+
+$success_message = null;
+if (isset($_SESSION["success_message"])) {
+    $success_message = $_SESSION["success_message"];
+    unset($_SESSION["success_message"]);
+}
+?>
 <!doctype html>
 <html lang="fr">
 
@@ -6,6 +14,7 @@
     <meta charset="UTF-8" />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css" />
+    <script src="toast.js"></script>
     <title>Mon Blog</title>
 </head>
 
@@ -124,6 +133,8 @@
         </footer>
     </div>
 
+
+
     <div id="context-menu">
         <ul>
             <li id="edit-comment">Modifier</li>
@@ -132,6 +143,8 @@
     </div>
 
     <script>
+
+
         document.addEventListener('DOMContentLoaded', function () {
             const contextMenu = document.getElementById('context-menu');
             let currentCommentId = null;
@@ -168,9 +181,12 @@
                         .then(response => response.json())
                         .then(data => {
                             if (data.success) {
-                                location.reload();
+                                showSuccessToast('Commentaire supprimé avec succès');
+                                setTimeout(() => {
+                                    location.reload();
+                                }, 1000);
                             } else {
-                                alert('Erreur : ' + data.message);
+                                showErrorToast(data.message || 'Une erreur est survenue lors de la suppression');
                             }
                         })
                         .catch(error => console.error('Erreur:', error));
@@ -202,7 +218,7 @@
                 saveButton.addEventListener('click', function () {
                     const newContent = textarea.value.trim();
                     if (newContent === '') {
-                        alert('Le commentaire ne peut pas être vide.');
+                        showWarningToast('Le commentaire ne peut pas être vide.');
                         return;
                     }
 
@@ -217,9 +233,12 @@
                         .then(response => response.json())
                         .then(data => {
                             if (data.success) {
-                                location.reload();
+                                showSuccessToast('Commentaire modifié avec succès');
+                                setTimeout(() => {
+                                    location.reload();
+                                }, 1000);
                             } else {
-                                alert('Erreur : ' + data.message);
+                                showErrorToast(data.message || 'Une erreur est survenue lors de la modification');
                                 contentP.innerText = originalContent;
                             }
                         })
@@ -232,6 +251,12 @@
                 contextMenu.style.display = 'none';
             });
         });
+
+        <?php if ($success_message): ?>
+            document.addEventListener('DOMContentLoaded', function() {
+                showSuccessToast('<?= addslashes($success_message) ?>');
+            });
+        <?php endif; ?>
     </script>
 </body>
 

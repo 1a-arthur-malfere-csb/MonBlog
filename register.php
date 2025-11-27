@@ -31,6 +31,8 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
                 );
                 $req->execute([$email, $password_hash]);
 
+                $_SESSION["success_message"] =
+                    "Compte créé avec succès ! Vous pouvez maintenant vous connecter.";
                 header("Location: login.php");
             }
         }
@@ -47,6 +49,7 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
     <meta charset="UTF-8" />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css" />
+    <script src="toast.js"></script>
     <title>Mon Blog - Inscription</title>
 </head>
 
@@ -69,7 +72,11 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
         </form>
 
         <?php if (isset($erreur)): ?>
-            <p class="error-message"><?= $erreur ?></p>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    showErrorToast('<?= addslashes($erreur) ?>');
+                });
+            </script>
         <?php endif; ?>
     </div>
     <footer id="piedBlog">
