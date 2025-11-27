@@ -10,9 +10,7 @@
 </head>
 
 <body>
-<?php // Helper function for the user avatar color in the header
-
-function getRandomColorForUser($email)
+<?php function getRandomColorForUser($email)
 {
     $hash = crc32($email);
     $colors = [
@@ -135,7 +133,6 @@ function getRandomColorForUser($email)
                     echo '<p style="color: red; text-align: center;">Une erreur est survenue lors de la connexion à la base de données.</p>';
                 }
             } else {
-                // This part is optional, but good UX.
                 if (isset($_GET["q"])) {
                     echo "<h1 class='text-center'>Veuillez entrer un terme de recherche.</h1>";
                 }

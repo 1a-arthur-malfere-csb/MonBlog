@@ -13,7 +13,6 @@
 <?php function getRandomColorForUser($email)
 {
     $hash = crc32($email);
-    // A list of pleasant, Material Design-like colors. Yellow is excluded for better contrast with white text.
     $colors = [
         "#F44336",
         "#E91E63",
@@ -159,7 +158,6 @@
         </footer>
     </div>
 
-    <!-- Menu contextuel (caché par défaut) -->
     <div id="context-menu">
         <ul>
             <li id="edit-comment">Modifier</li>
@@ -172,7 +170,6 @@
             const contextMenu = document.getElementById('context-menu');
             let currentCommentId = null;
 
-            // --- Gestion du menu contextuel ---
             document.querySelectorAll('.own-comment').forEach(comment => {
                 comment.addEventListener('contextmenu', function (e) {
                     e.preventDefault();
@@ -184,7 +181,6 @@
                 });
             });
 
-            // Cacher le menu si on clique ailleurs
             document.addEventListener('click', function (e) {
                 if (e.target.offsetParent != contextMenu) {
                     contextMenu.style.display = 'none';
@@ -192,7 +188,6 @@
                 }
             });
 
-            // --- Action de suppression ---
             document.getElementById('delete-comment').addEventListener('click', function () {
                 if (!currentCommentId) return;
 
@@ -217,7 +212,6 @@
                 contextMenu.style.display = 'none';
             });
 
-            // --- Action de modification ---
             document.getElementById('edit-comment').addEventListener('click', function () {
                 if (!currentCommentId) return;
 
@@ -226,7 +220,6 @@
                 const contentP = commentDiv.querySelector('.commentaireContenu');
                 const originalContent = contentP.innerText;
 
-                // Remplacer le paragraphe par un textarea
                 const textarea = document.createElement('textarea');
                 textarea.style.width = '100%';
                 textarea.style.height = '80px';
@@ -243,7 +236,6 @@
 
                 textarea.focus();
 
-                // Action de sauvegarde
                 saveButton.addEventListener('click', function () {
                     const newContent = textarea.value.trim();
                     if (newContent === '') {
@@ -265,7 +257,6 @@
                                 location.reload();
                             } else {
                                 alert('Erreur : ' + data.message);
-                                // Restaurer le contenu original en cas d'erreur
                                 contentP.innerText = originalContent;
                             }
                         })

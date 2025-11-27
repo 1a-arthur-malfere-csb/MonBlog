@@ -1,9 +1,8 @@
 /* Testé sous MySQL 5.x */
 /* Schema de la base de données pour le blog 'monblog' */
 
--- Il est recommandé de créer la base de données manuellement si elle n'existe pas :
--- CREATE DATABASE IF NOT EXISTS monblog CHARACTER SET utf8 COLLATE utf8_general_ci;
--- USE monblog;
+CREATE DATABASE IF NOT EXISTS monblog CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE monblog;
 
 -- Suppression des tables dans l'ordre inverse des dépendances pour éviter les erreurs de clé étrangère.
 DROP TABLE IF EXISTS T_COMMENTAIRE;
@@ -45,7 +44,3 @@ CREATE TABLE T_COMMENTAIRE (
 -- (NOW(), 'Au travail', 'Il faut enrichir ce blog dès maintenant.');
 -- INSERT INTO T_BILLET(BIL_DATE, BIL_TITRE, BIL_CONTENU) VALUES
 -- (NOW(), 'Troisième billet', 'Encore un billet pour tester le blog.');
-
--- Les utilisateurs et les commentaires doivent être ajoutés via l'application web.
--- Pour tester, créez un utilisateur via le formulaire d'inscription,
--- puis ajoutez des commentaires sur les billets.

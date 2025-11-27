@@ -24,18 +24,16 @@ if (isset($_POST["comment_id"]) && isset($_POST["content"])) {
             "password",
         );
 
-        // Vérifier que l'utilisateur est bien l'auteur du commentaire
         $req = $bdd->prepare(
             "SELECT UTI_ID FROM T_COMMENTAIRE WHERE COM_ID = ?",
         );
         $req->execute([$comment_id]);
         $comment = $req->fetch();
 
-        // Debug logging
+        // Debug
         // file_put_contents('debug_log.txt', "Received Comment ID: " . $comment_id . " - User ID: " . $user_id . " - Comment Author ID: " . ($comment ? $comment['UTI_ID'] : 'NULL') . "\n", FILE_APPEND);
 
         if ($comment && $comment["UTI_ID"] == $user_id) {
-            // Mettre à jour le commentaire
             $updateReq = $bdd->prepare(
                 "UPDATE T_COMMENTAIRE SET COM_CONTENU = ?, COM_MODIFIED = TRUE, COM_MODIFIED_DATE = NOW() WHERE COM_ID = ?",
             );

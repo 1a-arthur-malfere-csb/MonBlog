@@ -15,7 +15,6 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $erreur = "Format d'email invalide.";
         } else {
-            // Vérifier si l'email est déjà pris
             $req = $bdd->prepare(
                 "SELECT * FROM T_UTILISATEUR WHERE UTI_EMAIL = ?",
             );
@@ -25,10 +24,8 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
             if ($user) {
                 $erreur = "Cet email est déjà utilisé.";
             } else {
-                // Hasher le mot de passe
                 $password_hash = password_hash($password, PASSWORD_DEFAULT);
 
-                // Insérer le nouvel utilisateur
                 $req = $bdd->prepare(
                     "INSERT INTO T_UTILISATEUR(UTI_EMAIL, UTI_PASSWORD) VALUES (?, ?)",
                 );
