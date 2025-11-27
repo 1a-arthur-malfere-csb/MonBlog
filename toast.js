@@ -17,12 +17,10 @@ class ToastManager {
     this.container.appendChild(toast);
     this.toasts.push(toast);
 
-    // Trigger animation
     setTimeout(() => {
       toast.classList.add("toast-show");
     }, 10);
 
-    // Auto remove
     if (duration > 0) {
       setTimeout(() => {
         this.hide(toast);
