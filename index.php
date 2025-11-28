@@ -3,8 +3,8 @@ session_start();
 
 $success_message = null;
 if (isset($_SESSION["success_message"])) {
-    $success_message = $_SESSION["success_message"];
-    unset($_SESSION["success_message"]);
+  $success_message = $_SESSION["success_message"];
+  unset($_SESSION["success_message"]);
 }
 ?>
 <!doctype html>
@@ -26,10 +26,10 @@ if (isset($_SESSION["success_message"])) {
 
         <form action="search.php" method="get" class="search-form">
             <input type="search" name="q" placeholder="Rechercher des articles..." aria-label="Rechercher des articles" value="<?= isset(
-                $_GET["q"],
+              $_GET["q"],
             )
-                ? htmlspecialchars($_GET["q"])
-                : "" ?>">
+              ? htmlspecialchars($_GET["q"])
+              : "" ?>">
             <button type="submit" aria-label="Rechercher">
                 <svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                     <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
@@ -42,7 +42,7 @@ if (isset($_SESSION["success_message"])) {
                 <div class="user-info">
                     <div class="avatar">
                         <span><?= htmlspecialchars(
-                            strtoupper(substr($_SESSION["user_email"], 0, 1)),
+                          strtoupper(substr($_SESSION["user_email"], 0, 1)),
                         ) ?></span>
                     </div>
                     <p><?= htmlspecialchars($_SESSION["user_email"]) ?></p>
@@ -58,26 +58,26 @@ if (isset($_SESSION["success_message"])) {
         <div id="contenu">
             <?php
             $bdd = new PDO(
-                "mysql:host=localhost;dbname=monblog;charset=utf8",
-                "userblog",
-                "password",
+              "mysql:host=localhost;dbname=monblog;charset=utf8",
+              "userblog",
+              "password",
             );
             $billets = $bdd->query(
-                "SELECT BIL_ID as id, BIL_DATE as date, BIL_TITRE as titre, BIL_CONTENU as contenu FROM T_BILLET ORDER BY BIL_ID DESC",
+              "SELECT BIL_ID as id, BIL_DATE as date, BIL_TITRE as titre, BIL_CONTENU as contenu FROM T_BILLET ORDER BY BIL_ID DESC",
             );
 
             foreach ($billets as $billet): ?>
                 <article id="post-<?= $billet["id"] ?>">
                     <header>
                         <h1 class="titreBillet"><?= htmlspecialchars(
-                            $billet["titre"],
+                          $billet["titre"],
                         ) ?></h1>
                         <time><?= $billet["date"] ?></time>
                     </header>
                     <p><?= nl2br(htmlspecialchars($billet["contenu"])) ?></p>
                     <?php if (isset($_SESSION["user_id"])): ?>
                         <a href="commenter.php?id=<?= $billet[
-                            "id"
+                          "id"
                         ] ?>" class="bouton">Ajouter un commentaire</a>
                     <?php endif; ?>
 
@@ -85,7 +85,7 @@ if (isset($_SESSION["success_message"])) {
                         <h2>Commentaires</h2>
                         <?php
                         $reqCommentaires = $bdd->prepare(
-                            "SELECT c.COM_ID, c.COM_DATE, c.COM_CONTENU, c.COM_MODIFIED, c.COM_MODIFIED_DATE, u.UTI_ID, u.UTI_EMAIL
+                          "SELECT c.COM_ID, c.COM_DATE, c.COM_CONTENU, c.COM_MODIFIED, c.COM_MODIFIED_DATE, u.UTI_ID, u.UTI_EMAIL
                                  FROM T_COMMENTAIRE c
                                  JOIN T_UTILISATEUR u ON c.UTI_ID = u.UTI_ID
                                  WHERE c.BIL_ID = ?
@@ -98,27 +98,27 @@ if (isset($_SESSION["success_message"])) {
                             <p>Aucun commentaire pour le moment.</p>
                         <?php else:foreach ($commentaires as $commentaire): ?>
                                 <div class="commentaire" data-comment-id="<?= $commentaire[
-                                    "COM_ID"
+                                  "COM_ID"
                                 ] ?>">
                                     <p class="commentaireAuteur">
                                         <strong><?= htmlspecialchars(
-                                            $commentaire["UTI_EMAIL"],
+                                          $commentaire["UTI_EMAIL"],
                                         ) ?></strong> -
                                         <time><?= $commentaire[
-                                            "COM_DATE"
+                                          "COM_DATE"
                                         ] ?></time>
                                         <?php if (
-                                            $commentaire["COM_MODIFIED"]
+                                          $commentaire["COM_MODIFIED"]
                                         ): ?>
                                             <span class="modified-notice">(modifié le <time><?= $commentaire[
-                                                "COM_MODIFIED_DATE"
+                                              "COM_MODIFIED_DATE"
                                             ] ?></time>)</span>
                                         <?php endif; ?>
                                     </p>
                                     <p class="commentaireContenu"><?= nl2br(
-                                        htmlspecialchars(
-                                            $commentaire["COM_CONTENU"],
-                                        ),
+                                      htmlspecialchars(
+                                        $commentaire["COM_CONTENU"],
+                                      ),
                                     ) ?></p>
                                 </div>
                             <?php endforeach;endif;
@@ -148,10 +148,18 @@ if (isset($_SESSION["success_message"])) {
         document.addEventListener('DOMContentLoaded', function () {
             const contextMenu = document.getElementById('context-menu');
             let currentCommentId = null;
+            const isLoggedIn = <?= isset($_SESSION["user_id"])
+              ? "true"
+              : "false" ?>;
 
             document.querySelectorAll('.commentaire').forEach(comment => {
                 comment.addEventListener('contextmenu', function (e) {
                     e.preventDefault();
+
+                    if (!isLoggedIn) {
+                        return;
+                    }
+
                     currentCommentId = this.dataset.commentId;
 
                     contextMenu.style.display = 'block';
