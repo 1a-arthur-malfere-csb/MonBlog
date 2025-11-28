@@ -85,43 +85,152 @@ if (isset($_SESSION["success_message"])) {
                         <h2>Commentaires</h2>
                         <?php
                         $reqCommentaires = $bdd->prepare(
-                          "SELECT c.COM_ID, c.COM_DATE, c.COM_CONTENU, c.COM_MODIFIED, c.COM_MODIFIED_DATE, u.UTI_ID, u.UTI_EMAIL
+                          "SELECT c.COM_ID, c.COM_DATE, c.COM_CONTENU, c.COM_MODIFIED, c.COM_MODIFIED_DATE, u.UTI_ID, u.UTI_EMAIL,
+                                 COALESCE(SUM(CASE WHEN v.VOT_TYPE = 'up' THEN 1 ELSE 0 END), 0) as upvotes,
+                                 COALESCE(SUM(CASE WHEN v.VOT_TYPE = 'down' THEN 1 ELSE 0 END), 0) as downvotes,
+                                 (COALESCE(SUM(CASE WHEN v.VOT_TYPE = 'up' THEN 1 ELSE 0 END), 0) - COALESCE(SUM(CASE WHEN v.VOT_TYPE = 'down' THEN 1 ELSE 0 END), 0)) as score
                                  FROM T_COMMENTAIRE c
                                  JOIN T_UTILISATEUR u ON c.UTI_ID = u.UTI_ID
+                                 LEFT JOIN T_VOTE v ON c.COM_ID = v.COM_ID
                                  WHERE c.BIL_ID = ?
-                                 ORDER BY c.COM_DATE",
+                                 GROUP BY c.COM_ID, c.COM_DATE, c.COM_CONTENU, c.COM_MODIFIED, c.COM_MODIFIED_DATE, u.UTI_ID, u.UTI_EMAIL
+                                 ORDER BY score DESC, c.COM_DATE ASC",
                         );
                         $reqCommentaires->execute([$billet["id"]]);
                         $commentaires = $reqCommentaires->fetchAll();
 
+                        // Récupérer les votes de l'utilisateur actuel si connecté
+                        $userVotes = [];
+                        if (isset($_SESSION["user_id"])) {
+                          $commentIds = array_column($commentaires, "COM_ID");
+                          if (!empty($commentIds)) {
+                            $placeholders =
+                              str_repeat("?,", count($commentIds) - 1) . "?";
+                            $reqUserVotes = $bdd->prepare(
+                              "SELECT COM_ID, VOT_TYPE FROM T_VOTE WHERE UTI_ID = ? AND COM_ID IN ($placeholders)",
+                            );
+                            $reqUserVotes->execute(
+                              array_merge([$_SESSION["user_id"]], $commentIds),
+                            );
+                            $userVotesResult = $reqUserVotes->fetchAll();
+                            foreach ($userVotesResult as $vote) {
+                              $userVotes[$vote["COM_ID"]] = $vote["VOT_TYPE"];
+                            }
+                          }
+                        }
+
                         if (empty($commentaires)): ?>
                             <p>Aucun commentaire pour le moment.</p>
-                        <?php else:foreach ($commentaires as $commentaire): ?>
+                        <?php else:foreach ($commentaires as $commentaire):
+
+                            $userVote = isset(
+                              $userVotes[$commentaire["COM_ID"]],
+                            )
+                              ? $userVotes[$commentaire["COM_ID"]]
+                              : null;
+                            $score = (int) $commentaire["score"];
+                            $upvotes = (int) $commentaire["upvotes"];
+                            $downvotes = (int) $commentaire["downvotes"];
+                            ?>
                                 <div class="commentaire" data-comment-id="<?= $commentaire[
                                   "COM_ID"
                                 ] ?>">
-                                    <p class="commentaireAuteur">
-                                        <strong><?= htmlspecialchars(
-                                          $commentaire["UTI_EMAIL"],
-                                        ) ?></strong> -
-                                        <time><?= $commentaire[
-                                          "COM_DATE"
-                                        ] ?></time>
-                                        <?php if (
-                                          $commentaire["COM_MODIFIED"]
-                                        ): ?>
-                                            <span class="modified-notice">(modifié le <time><?= $commentaire[
-                                              "COM_MODIFIED_DATE"
-                                            ] ?></time>)</span>
-                                        <?php endif; ?>
-                                    </p>
-                                    <p class="commentaireContenu"><?= nl2br(
-                                      htmlspecialchars(
-                                        $commentaire["COM_CONTENU"],
-                                      ),
-                                    ) ?></p>
+                                    <div class="comment-wrapper">
+                                        <div class="vote-container">
+                                            <?php if (
+                                              isset($_SESSION["user_id"])
+                                            ): ?>
+                                                <div class="vote-buttons">
+                                                    <button class="vote-btn upvote <?= $userVote ===
+                                                    "up"
+                                                      ? "active"
+                                                      : "" ?>"
+                                                            data-comment-id="<?= $commentaire[
+                                                              "COM_ID"
+                                                            ] ?>"
+                                                            data-vote-type="up"
+                                                            aria-label="Voter pour ce commentaire">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                                            <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
+                                                        </svg>
+                                                    </button>
+                                                    <div class="vote-score <?= $score >
+                                                    0
+                                                      ? "positive"
+                                                      : ($score < 0
+                                                        ? "negative"
+                                                        : "") ?>"
+                                                         data-comment-id="<?= $commentaire[
+                                                           "COM_ID"
+                                                         ] ?>"><?= $score ?></div>
+                                                    <button class="vote-btn downvote <?= $userVote ===
+                                                    "down"
+                                                      ? "active"
+                                                      : "" ?>"
+                                                            data-comment-id="<?= $commentaire[
+                                                              "COM_ID"
+                                                            ] ?>"
+                                                            data-vote-type="down"
+                                                            aria-label="Voter contre ce commentaire">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                                            <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/>
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                            <?php else: ?>
+                                                <div class="vote-buttons">
+                                                    <button class="vote-btn upvote" disabled title="Connectez-vous pour voter">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                                            <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
+                                                        </svg>
+                                                    </button>
+                                                    <div class="vote-score <?= $score >
+                                                    0
+                                                      ? "positive"
+                                                      : ($score < 0
+                                                        ? "negative"
+                                                        : "") ?>"><?= $score ?></div>
+                                                    <button class="vote-btn downvote" disabled title="Connectez-vous pour voter">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                                            <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/>
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                                <span class="vote-login-prompt">
+                                                    <a href="login.php">Connectez-vous</a> pour voter
+                                                </span>
+                                            <?php endif; ?>
+                                        </div>
+                                        <div class="comment-content">
+                                            <div class="comment-meta">
+                                                <p class="commentaireAuteur">
+                                                    <strong><?= htmlspecialchars(
+                                                      $commentaire["UTI_EMAIL"],
+                                                    ) ?></strong> -
+                                                    <time><?= $commentaire[
+                                                      "COM_DATE"
+                                                    ] ?></time>
+                                                    <?php if (
+                                                      $commentaire[
+                                                        "COM_MODIFIED"
+                                                      ]
+                                                    ): ?>
+                                                        <span class="modified-notice">(modifié le <time><?= $commentaire[
+                                                          "COM_MODIFIED_DATE"
+                                                        ] ?></time>)</span>
+                                                    <?php endif; ?>
+                                                </p>
+                                            </div>
+                                            <p class="commentaireContenu"><?= nl2br(
+                                              htmlspecialchars(
+                                                $commentaire["COM_CONTENU"],
+                                              ),
+                                            ) ?></p>
+                                        </div>
+                                    </div>
                                 </div>
-                            <?php endforeach;endif;
+                            <?php
+                          endforeach;endif;
                         ?>
                     </div>
                 </article>
@@ -258,6 +367,72 @@ if (isset($_SESSION["success_message"])) {
 
                 contextMenu.style.display = 'none';
             });
+        });
+
+        // Fonction pour gérer les votes
+        function handleVote(commentId, voteType) {
+            if (!isLoggedIn) {
+                showWarningToast('Vous devez être connecté pour voter');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('comment_id', commentId);
+            formData.append('vote_type', voteType);
+
+            fetch('vote.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    updateVoteUI(commentId, data);
+
+                    if (data.action === 'added') {
+                        showSuccessToast(`Vote ${voteType === 'up' ? 'positif' : 'négatif'} ajouté`);
+                    } else if (data.action === 'updated') {
+                        showSuccessToast(`Vote modifié en ${voteType === 'up' ? 'positif' : 'négatif'}`);
+                    } else if (data.action === 'removed') {
+                        showSuccessToast('Vote retiré');
+                    }
+                } else {
+                    showErrorToast(data.message || 'Erreur lors du vote');
+                }
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                showErrorToast('Erreur de connexion');
+            });
+        }
+
+        function updateVoteUI(commentId, data) {
+            const upButton = document.querySelector(`[data-comment-id="${commentId}"][data-vote-type="up"]`);
+            const downButton = document.querySelector(`[data-comment-id="${commentId}"][data-vote-type="down"]`);
+            const scoreElement = document.querySelector(`[data-comment-id="${commentId}"].vote-score`);
+
+            // Mettre à jour les boutons
+            upButton.classList.toggle('active', data.user_vote === 'up');
+            downButton.classList.toggle('active', data.user_vote === 'down');
+
+            // Mettre à jour le score
+            scoreElement.textContent = data.score;
+            scoreElement.className = 'vote-score';
+            if (data.score > 0) {
+                scoreElement.classList.add('positive');
+            } else if (data.score < 0) {
+                scoreElement.classList.add('negative');
+            }
+        }
+
+        // Ajouter les event listeners pour les votes
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.vote-btn') && !e.target.closest('.vote-btn').disabled) {
+                const button = e.target.closest('.vote-btn');
+                const commentId = button.dataset.commentId;
+                const voteType = button.dataset.voteType;
+                handleVote(commentId, voteType);
+            }
         });
 
         <?php if ($success_message): ?>
